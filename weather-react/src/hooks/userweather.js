@@ -20,14 +20,16 @@ function useWeather() {
         setWeather(null);
 
         try {
+            // Request forecast for today (hourly) and include AQI
             const res = await fetch(
-                `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=no`
-            );
+                    `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(city)}&days=1&aqi=yes&alerts=no`
+                );
             if (!res.ok) {
                 const errData = await res.json().catch(() => ({}));
                 throw new Error(errData.error?.message || `HTTP ${res.status}`);
             }
             const data = await res.json();
+            // the response contains 'location', 'current', and 'forecast'
             setWeather(data);
         } catch (err) {
             setError(err.message || "Unknown error");
